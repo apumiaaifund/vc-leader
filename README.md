@@ -1,5 +1,8 @@
 # vc-leader — Public Demo
 
+<p align="center"><img src="assets/logo.svg" alt="logo" width="400"></p>
+
+
 ## За 30 секунд
 
 **Что это:** vc-leader: SD-JWT VC backend для eIDAS 2.0. Выпуск, верификация, селективное раскрытие.

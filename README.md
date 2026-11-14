@@ -1,5 +1,19 @@
 # vc-leader — Public Demo
 
+## За 30 секунд
+
+**Что это:** vc-leader: SD-JWT VC backend для eIDAS 2.0. Выпуск, верификация, селективное раскрытие.
+
+**Кому:** EU-провайдеры identity, eIDAS 2.0 — но для РФ-экспорта закрыто санкциями.
+
+**Что доказано:** 14 тестов.
+
+**Чего не доказано (честно):** EU-рынок закрыт для IT-услуг из РФ.
+
+---
+
+
+
 **Verifiable Credentials backend** — SD-JWT VC, OpenID4VP 1.0, HAIP. On-premise, offline verification.
 
 ## Что делает

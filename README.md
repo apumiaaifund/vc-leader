@@ -37,6 +37,14 @@ W3C VC и eIDAS 2.0 требуют асимметричной подписи и 
 
 Контакт: apumiaaifund@gmail.com
 
+
+## Data integrity
+
+**No synthetic data in production.** External sources are documented in `sources.yaml` (Private repo) with official URLs, real verification dates, and status. No fabricated dates. Demo artifacts are clearly marked as examples.
+
+**Никакой синтетики в продакшене.** Внешние источники — в `sources.yaml` (Private репо) с официальными URL, реальными датами, статусом. Ни одной придуманной даты. Demo — помечены как примеры.
+
+
 ## Лицензия
 
 Proprietary. См. LICENSE. Исходный код — по запросу.

@@ -1,26 +1,40 @@
-![PROVEN](https://img.shields.io/badge/PROVEN-14%20passed-brightgreen)
-
-
 <p align="center"><img src="assets/logo.svg" alt="logo" width="400"></p>
 
-<p align="center">
-  <img src="docs/logo.png" alt="vc-leader-demo" width="200"/>
-</p>
+![PROVEN](https://img.shields.io/badge/PROVEN-14%20passed-brightgreen)
 
-<h1 align="center">vc-leader-demo</h1>
+# VC Leader
 
-<p align="center">
-  <b>Public demo / archive: APUM AI Fund — воспроизводимая финансовая аналитика</b><br/>
-  APUM AI Fund — воспроизводимая финансовая аналитика
-</p>
+**SD-JWT VC backend для eIDAS 2.0. Выпуск, верификация, селективное раскрытие.**
 
-## О продукте
-Архивный демо-проект APUM AI Fund. См. основные флагманские продукты в профиле организации.
+---
 
-## Выгоды
-Изучение истории разработки и эволюции архитектуры APUMIA.
+## За 30 секунд
 
+**Что это:** SD-JWT VC backend для eIDAS 2.0. Выпуск, верификация, селективное раскрытие credentials.
 
-## Связанные продукты
-Этот репозиторий является частью экосистемы [APUM AI Fund](https://github.com/apumiaaifund).
-Флагманский продукт: [apumia_credit](https://github.com/apumiaaifund/apumia_credit) (PROVEN 8/8).
+**Кому:** EU-провайдеры identity, eIDAS 2.0.
+
+**Почему сейчас:** eIDAS 2.0 требует verifiable credentials. VC Leader — готовый backend.
+
+**Что доказано:** 14 passed. apumia prove → PROVEN.
+
+**Чего не доказано (честно):** EU-рынок закрыт для IT-услуг из РФ.
+
+---
+
+## Оффер
+
+По запросу.
+
+**Следующий шаг:** Покажу селективное раскрытие — 15 минут.
+
+---
+
+## GitHub
+
+- **Private code:** apumiaaifund/vc-leader
+- **Public demo:** apumiaaifund/vc-leader-demo
+
+## License
+
+MIT

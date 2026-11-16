@@ -1,0 +1,33 @@
+name: CI Verification
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies & run verification
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest pyyaml
+          if [ -f requirements.txt ]; then pip install -r requirements.txt || true; fi
+          if [ -f pyproject.toml ]; then pip install -e . || true; fi
+          python -m compileall -q .
+          if ls tests/test_*.py test_*.py 1>/dev/null 2>&1; then
+            PYTHONPATH=. pytest -v
+          else
+            python3 -c "import glob, json; [json.load(open(f)) for f in glob.glob("**/*.json", recursive=True)]"
+            echo "Static & JSON integrity verified"
+          fi

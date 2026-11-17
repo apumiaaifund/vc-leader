@@ -2,6 +2,13 @@
 <style>body{margin:0;font-family:system-ui,sans-serif;background:#0b0f19;color:#f1f5f9}header{display:flex;justify-content:space-between;padding:16px 32px;border-bottom:1px solid #26324d;background:#0f1626}.brand{font-weight:800}.brand span{color:#38bdf8}.nav a{color:#38bdf8;text-decoration:none;margin-left:16px;font-size:14px}.wrap{max-width:920px;margin:32px auto;padding:0 20px}.card{background:#131b2e;border:1px solid #26324d;border-radius:16px;padding:24px}textarea{width:100%;height:110px;background:#0b0f19;color:#e2e8f0;border:1px solid #334155;border-radius:10px;padding:12px;font-family:monospace}button{margin-top:12px;background:#38bdf8;color:#0b0f19;border:none;padding:11px 20px;border-radius:10px;font-weight:700;cursor:pointer}.res{margin-top:16px;padding:14px;border-radius:10px;background:#0b0f19;border:1px solid #1e293b;font-family:monospace;font-size:13px}.PASS{color:#4ade80;font-weight:700}.FAIL{color:#f87171;font-weight:700}</style></head><body>
 <header><div class="brand">🛡️ VC Leader <span>Live Sandbox</span></div><div class="nav"><a href="https://github.com">← Портфель</a><a href="https://github.com/vc-leader-demo">GitHub ↗</a></div></header>
 <div class="wrap"><div class="card"><h1>VC Leader</h1><p style="color:#94a3b8">Скоринг стартапов и венчурных портфелей (Zero-Trust: расчёт локально в браузере).</p>
+
+<div id="eng-bar" style="margin:12px 0;padding:10px;background:#0f172a;border:1px solid #334155;border-radius:8px;display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+  <label style="background:#1e293b;color:#93c5fd;border:1px solid #475569;border-radius:6px;padding:6px 10px;font-size:12px;font-weight:700;cursor:pointer">📂 Загрузить .json / .csv<input type="file" accept=".json,.csv,.txt" style="display:none" onchange="window._engLoad(this)"></label>
+  <button type="button" onclick="window._engPreset(true)" style="background:#064e3b;color:#6ee7b7;border:1px solid #059669;border-radius:6px;padding:6px 10px;font-size:12px;font-weight:700;cursor:pointer">✅ Тест: Валидные данные</button>
+  <button type="button" onclick="window._engPreset(false)" style="background:#7f1d1d;color:#fca5a5;border:1px solid #dc2626;border-radius:6px;padding:6px 10px;font-size:12px;font-weight:700;cursor:pointer">⛔ Тест: Нарушение правила</button>
+  <span id="eng-fn" style="font-size:12px;color:#94a3b8"></span>
+</div>
 <textarea id="inp">{"arr_usd":420000,"growth_mom_pct":18}</textarea><button onclick="runCheck()">Проверить данные</button><div class="res" id="out"></div></div></div>
 <script>const MODE="GEN";async function sha(m){const b=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(m));return Array.from(new Uint8Array(b)).map(x=>x.toString(16).padStart(2,"0")).join("")}
 async function runCheck(){let o;try{o=JSON.parse(document.getElementById("inp").value)}catch(e){document.getElementById("out").innerHTML=`<span class="FAIL">REJECTED</span>: ${e.message}`;return}
@@ -11,4 +18,11 @@ if(MODE==="PQC"&&/RSA-1024|RSA-2048|SHA-1|MD5/.test(JSON.stringify(o))){ok=false
 if(MODE==="CODE"&&(o.has_eval===true||(o.secrets_found||0)>0||(o.cyclomatic_complexity||0)>15)){ok=false;r="DevSecOps Gate: превышена сложность McCabe или RCE"}
 if(MODE==="NET"&&((o.packet_loss_pct||0)>2||(o.rtt_ms||0)>150)){ok=false;r="SLA Threshold Exceeded"}
 if(MODE==="CERT"&&o.pii_leak===true){ok=false;r="Zero-PII Policy Violation"}
-const h=await sha(JSON.stringify(o));document.getElementById("out").innerHTML=`Статус: <span class="${ok?"PASS":"FAIL"}">${ok?"VERIFIED & PROVEN":"REJECTED"}</span><br>Детали: ${r}<br>Audit SHA-256: <b>${h}</b>`}runCheck();</script></body></html>
+const h=await sha(JSON.stringify(o));document.getElementById("out").innerHTML=`Статус: <span class="${ok?"PASS":"FAIL"}">${ok?"VERIFIED & PROVEN":"REJECTED"}</span><br>Детали: ${r}<br>Audit SHA-256: <b>${h}</b>`}runCheck();</script><script>
+(function(){
+  function tgt(){return document.querySelector('textarea')||document.querySelector('input[type=text]');}
+  function run(){var b=Array.from(document.querySelectorAll('button')).find(function(x){return /проверить|verify|check|run|сертифик/i.test(x.textContent||'');});if(b)b.click();}
+  window._engPreset=function(ok){var t=tgt();if(!t)return;t.value=ok?JSON.stringify({status:"valid",verified:true,amount:15000,kex:"ML-KEM-768",human_oversight:true,quorum_nodes:5},null,2):JSON.stringify({status:"violation",verified:false,amount:-500,kex:"RSA-2048",human_oversight:false,quorum_nodes:1},null,2);run();};
+  window._engLoad=function(inp){var f=inp.files&&inp.files;if(!f)return;var fn=document.getElementById('eng-fn');if(fn)fn.textContent=f.name;var r=new FileReader();r.onload=function(e){var raw=String(e.target.result||'').trim();if(f.name.toLowerCase().endsWith('.csv')&&raw.charAt(0)!=='{'){var ls=raw.split(/\r?\n/).filter(Boolean);if(ls.length>=2){var ks=ls.split(','),vs=ls.split(','),o={};ks.forEach(function(k,i){var v=(vs[i]||'').trim(),n=Number(v);o[k.trim()]=isNaN(n)?(v==='true'?true:(v==='false'?false:v)):n;});raw=JSON.stringify(o,null,2);}}var t=tgt();if(t){t.value=raw;run();}};r.readAsText(f);};
+})();
+</script></body></html>

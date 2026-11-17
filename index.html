@@ -129,4 +129,18 @@ const h=await sha(JSON.stringify(o));document.getElementById("out").innerHTML=`Ð
     setTimeout(renderCalc,30);
   },true);
 })();
-</script></body></html>
+</script>
+<script>
+(function(){
+  function bootCalc(){
+    if(typeof window._engExec==='function'){window._engExec();}
+    else{
+      var b=document.querySelector('button:not(#l-ru):not(#l-en):not(#l-zh)');
+      if(b)try{b.click();}catch(e){}
+    }
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',function(){setTimeout(bootCalc,80);});
+  else setTimeout(bootCalc,80);
+})();
+</script>
+</body></html>

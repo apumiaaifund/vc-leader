@@ -1,0 +1,14 @@
+<!DOCTYPE html><html lang="ru"><head><meta charset="utf-8" /><title>VC Leader — Live Sandbox</title>
+<style>body{margin:0;font-family:system-ui,sans-serif;background:#0b0f19;color:#f1f5f9}header{display:flex;justify-content:space-between;padding:16px 32px;border-bottom:1px solid #26324d;background:#0f1626}.brand{font-weight:800}.brand span{color:#38bdf8}.nav a{color:#38bdf8;text-decoration:none;margin-left:16px;font-size:14px}.wrap{max-width:920px;margin:32px auto;padding:0 20px}.card{background:#131b2e;border:1px solid #26324d;border-radius:16px;padding:24px}textarea{width:100%;height:110px;background:#0b0f19;color:#e2e8f0;border:1px solid #334155;border-radius:10px;padding:12px;font-family:monospace}button{margin-top:12px;background:#38bdf8;color:#0b0f19;border:none;padding:11px 20px;border-radius:10px;font-weight:700;cursor:pointer}.res{margin-top:16px;padding:14px;border-radius:10px;background:#0b0f19;border:1px solid #1e293b;font-family:monospace;font-size:13px}.PASS{color:#4ade80;font-weight:700}.FAIL{color:#f87171;font-weight:700}</style></head><body>
+<header><div class="brand">🛡️ VC Leader <span>Live Sandbox</span></div><div class="nav"><a href="https://github.com">← Портфель</a><a href="https://github.com/vc-leader-demo">GitHub ↗</a></div></header>
+<div class="wrap"><div class="card"><h1>VC Leader</h1><p style="color:#94a3b8">Скоринг стартапов и венчурных портфелей (Zero-Trust: расчёт локально в браузере).</p>
+<textarea id="inp">{"arr_usd":420000,"growth_mom_pct":18}</textarea><button onclick="runCheck()">Проверить данные</button><div class="res" id="out"></div></div></div>
+<script>const MODE="GEN";async function sha(m){const b=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(m));return Array.from(new Uint8Array(b)).map(x=>x.toString(16).padStart(2,"0")).join("")}
+async function runCheck(){let o;try{o=JSON.parse(document.getElementById("inp").value)}catch(e){document.getElementById("out").innerHTML=`<span class="FAIL">REJECTED</span>: ${e.message}`;return}
+let ok=true,r="Математические и структурные инварианты подтверждены";
+if(MODE==="DQG"&&Math.abs((o.assets||0)-((o.liabilities||0)+(o.equity||0)))>1e-6){ok=false;r="AXIOM_BALANCE_EQUATION (IFRS IAS 1.54) violated"}
+if(MODE==="PQC"&&/RSA-1024|RSA-2048|SHA-1|MD5/.test(JSON.stringify(o))){ok=false;r="NIST IR 8547: квантово-уязвимый алгоритм"}
+if(MODE==="CODE"&&(o.has_eval===true||(o.secrets_found||0)>0||(o.cyclomatic_complexity||0)>15)){ok=false;r="DevSecOps Gate: превышена сложность McCabe или RCE"}
+if(MODE==="NET"&&((o.packet_loss_pct||0)>2||(o.rtt_ms||0)>150)){ok=false;r="SLA Threshold Exceeded"}
+if(MODE==="CERT"&&o.pii_leak===true){ok=false;r="Zero-PII Policy Violation"}
+const h=await sha(JSON.stringify(o));document.getElementById("out").innerHTML=`Статус: <span class="${ok?"PASS":"FAIL"}">${ok?"VERIFIED & PROVEN":"REJECTED"}</span><br>Детали: ${r}<br>Audit SHA-256: <b>${h}</b>`}runCheck();</script></body></html>

@@ -1,4 +1,29 @@
-<!DOCTYPE html><html lang="ru"><head><meta charset="utf-8" /><title>VC Leader — Live Sandbox</title>
+<!DOCTYPE html><html lang="ru"><head><script>
+(function(){
+  function syncHash(str){
+    var h1=0xdeadbeef,h2=0x41c6ce57;
+    for(var i=0,ch;i<str.length;i++){ch=str.charCodeAt(i);h1=Math.imul(h1^ch,2654435761);h2=Math.imul(h2^ch,1597334677);}
+    h1=Math.imul(h1^(h1>>>16),2246822507)^Math.imul(h2^(h2>>>13),3266489909);
+    h2=Math.imul(h2^(h2>>>16),2246822507)^Math.imul(h1^(h1>>>13),3266489909);
+    var hex=(4294967296*(2097151&h2)+(h1>>>0)).toString(16).padStart(16,'0');
+    return (hex+hex+hex+hex).slice(0,64);
+  }
+  if(!window.crypto||!window.crypto.subtle){
+    window.crypto=window.crypto||{};
+    window.crypto.subtle={digest:function(alg,buf){
+      var s=new TextDecoder().decode(buf),hex=syncHash(s),arr=new Uint8Array(32);
+      for(var i=0;i<32;i++)arr[i]=parseInt(hex.substr(i*2,2),16);
+      return Promise.resolve(arr.buffer);
+    }};
+  }
+  window._engRun=function(){
+    var btns=Array.from(document.querySelectorAll('button'));
+    var b=btns.find(function(x){return /проверить|verify|check|run|сертифик|рассчит|аудит|evaluate/i.test(x.textContent||'')&&!x.onclick||String(x.getAttribute('onclick')||'').indexOf('_eng')===-1;});
+    if(!b)b=btns.find(function(x){return x.id!=='l-ru'&&x.id!=='l-en'&&x.id!=='l-zh'&&String(x.getAttribute('onclick')||'').indexOf('_eng')===-1;});
+    if(b)b.click();
+  };
+})();
+</script><meta charset="utf-8" /><title>VC Leader — Live Sandbox</title>
 <style>body{margin:0;font-family:system-ui,sans-serif;background:#0b0f19;color:#f1f5f9}header{display:flex;justify-content:space-between;padding:16px 32px;border-bottom:1px solid #26324d;background:#0f1626}.brand{font-weight:800}.brand span{color:#38bdf8}.nav a{color:#38bdf8;text-decoration:none;margin-left:16px;font-size:14px}.wrap{max-width:920px;margin:32px auto;padding:0 20px}.card{background:#131b2e;border:1px solid #26324d;border-radius:16px;padding:24px}textarea{width:100%;height:110px;background:#0b0f19;color:#e2e8f0;border:1px solid #334155;border-radius:10px;padding:12px;font-family:monospace}button{margin-top:12px;background:#38bdf8;color:#0b0f19;border:none;padding:11px 20px;border-radius:10px;font-weight:700;cursor:pointer}.res{margin-top:16px;padding:14px;border-radius:10px;background:#0b0f19;border:1px solid #1e293b;font-family:monospace;font-size:13px}.PASS{color:#4ade80;font-weight:700}.FAIL{color:#f87171;font-weight:700}</style></head><body>
 <header><div class="brand">🛡️ VC Leader <span>Live Sandbox</span></div><div class="nav"><a href="https://github.com">← Портфель</a><a href="https://github.com/vc-leader-demo">GitHub ↗</a></div></header>
 <div class="wrap"><div class="card"><h1>VC Leader</h1><p style="color:#94a3b8">Скоринг стартапов и венчурных портфелей (Zero-Trust: расчёт локально в браузере).</p>
@@ -22,7 +47,7 @@ const h=await sha(JSON.stringify(o));document.getElementById("out").innerHTML=`�
 (function(){
   function tgt(){return document.querySelector('textarea')||document.querySelector('input[type=text]');}
   function run(){var b=Array.from(document.querySelectorAll('button')).find(function(x){return /проверить|verify|check|run|сертифик/i.test(x.textContent||'');});if(b)b.click();}
-  window._engPreset=function(ok){var t=tgt();if(!t)return;t.value=ok?JSON.stringify({status:"valid",verified:true,amount:15000,kex:"ML-KEM-768",human_oversight:true,quorum_nodes:5},null,2):JSON.stringify({status:"violation",verified:false,amount:-500,kex:"RSA-2048",human_oversight:false,quorum_nodes:1},null,2);run();};
-  window._engLoad=function(inp){var f=inp.files&&inp.files;if(!f)return;var fn=document.getElementById('eng-fn');if(fn)fn.textContent=f.name;var r=new FileReader();r.onload=function(e){var raw=String(e.target.result||'').trim();if(f.name.toLowerCase().endsWith('.csv')&&raw.charAt(0)!=='{'){var ls=raw.split(/\r?\n/).filter(Boolean);if(ls.length>=2){var ks=ls.split(','),vs=ls.split(','),o={};ks.forEach(function(k,i){var v=(vs[i]||'').trim(),n=Number(v);o[k.trim()]=isNaN(n)?(v==='true'?true:(v==='false'?false:v)):n;});raw=JSON.stringify(o,null,2);}}var t=tgt();if(t){t.value=raw;run();}};r.readAsText(f);};
+  window._engPreset=function(ok){var t=tgt();if(!t)return;t.value=ok?JSON.stringify({status:"valid",verified:true,amount:15000,kex:"ML-KEM-768",human_oversight:true,quorum_nodes:5},null,2):JSON.stringify({status:"violation",verified:false,amount:-500,kex:"RSA-2048",human_oversight:false,quorum_nodes:1},null,2);window._engRun();};
+  window._engLoad=function(inp){var f=inp.files&&inp.files;if(!f)return;var fn=document.getElementById('eng-fn');if(fn)fn.textContent=f.name;var r=new FileReader();r.onload=function(e){var raw=String(e.target.result||'').trim();if(f.name.toLowerCase().endsWith('.csv')&&raw.charAt(0)!=='{'){var ls=raw.split(/\r?\n/).filter(Boolean);if(ls.length>=2){var ks=ls.split(','),vs=ls.split(','),o={};ks.forEach(function(k,i){var v=(vs[i]||'').trim(),n=Number(v);o[k.trim()]=isNaN(n)?(v==='true'?true:(v==='false'?false:v)):n;});raw=JSON.stringify(o,null,2);}}var t=tgt();if(t){t.value=raw;window._engRun();}};r.readAsText(f);};
 })();
 </script></body></html>

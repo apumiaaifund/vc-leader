@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>vc-leader — Offline Desktop Edition</title>
+<style>
+  body { font-family: system-ui, -apple-system, sans-serif; background: #0b1120; color: #f1f5f9; max-width: 780px; margin: 32px auto; padding: 20px; }
+  .card { background: #111827; border: 1px solid #1e293b; border-radius: 12px; padding: 24px; margin-bottom: 18px; }
+  h1 { font-size: 24px; margin: 0 0 6px; }
+  .sub { color: #94a3b8; font-size: 14px; margin: 0 0 18px; }
+  label { display: block; font-size: 13px; color: #cbd5e1; margin: 10px 0 4px; }
+  input { width: 100%; box-sizing: border-box; padding: 10px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: #fff; font-size: 15px; }
+  .btns { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 16px; }
+  button { padding: 11px 18px; border-radius: 8px; border: none; font-weight: 700; cursor: pointer; font-size: 14px; }
+  .b-run { background: #10b981; color: #042f1e; }
+  .b-csv { background: #38bdf8; color: #041e2e; }
+  .b-pdf { background: #f59e0b; color: #1c1103; }
+  .out { background: #090d16; border: 1px solid #10b98155; border-radius: 10px; padding: 16px; margin-top: 16px; font-family: ui-monospace, monospace; font-size: 13px; white-space: pre-wrap; }
+  @media print { body { background: #fff; color: #000; } .btns { display: none; } .card { border: 1px solid #ccc; background: #fff; } .out { background: #f8fafc; color: #000; border: 1px solid #999; } }
+</style>
+</head>
+<body>
+<div class="card">
+  <h1>vc-leader</h1>
+  <p class="sub">APUMIA Deterministic Verification Module • 100% Air-Gapped Offline Desktop App (Zero-Float Integer-Cent Engine)</p>
+  <label>Client / Entity Legal Name</label>
+  <input id="client" value="Acme Operations LLC" />
+  <label>Gross Audited Volume / Exposure Base ($ USD)</label>
+  <input id="amount" type="number" value="125000" />
+  <label>Variance / Statutory Rate (Basis Points, 100 bps = 1.00%)</label>
+  <input id="bps" type="number" value="1530" />
+  <div class="btns">
+    <button class="b-run" onclick="runAudit()">▶ Run Zero-Float Audit</button>
+    <button class="b-csv" onclick="dlCSV()">⬇ Download CSV Workpaper</button>
+    <button class="b-pdf" onclick="window.print()">🖨 Print / Save PDF Report</button>
+  </div>
+  <div id="out" class="out">Click "Run Zero-Float Audit" to generate SHA-256 sealed client workpaper...</div>
+</div>
+<script>
+let lastReport = null;
+async function runAudit() {
+  const client = document.getElementById("client").value || "Client Entity";
+  const cents = BigInt(Math.round((parseFloat(document.getElementById("amount").value) || 0) * 100));
+  const bps = BigInt(Math.round(parseFloat(document.getElementById("bps").value) || 0));
+  const deltaCents = (cents * bps) / 10000n;
+  const ts = new Date().toISOString();
+  const payload = `${client}|${cents}|${bps}|${deltaCents}|${ts}`;
+  const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(payload));
+  const hash = Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, "0")).join("");
+  const fmt = (c) => "$" + (Number(c) / 100).toLocaleString("en-US", {minimumFractionDigits: 2, maximumFractionDigits: 2});
+  lastReport = { client, base: fmt(cents), bps: bps.toString(), impact: fmt(deltaCents), ts, hash };
+  document.getElementById("out").textContent =
+    `APUMIA DETERMINISTIC AUDIT WORKPAPER\n` +
+    `Module:       vc-leader\n` +
+    `Client:       ${client}\n` +
+    `Audited Base: ${lastReport.base}\n` +
+    `Rate (bps):   ${bps} bps\n` +
+    `Net Impact:   ${lastReport.impact}\n` +
+    `Timestamp:    ${ts}\n` +
+    `SHA-256 Seal: ${hash}`;
+}
+function dlCSV() {
+  if (!lastReport) return alert("Run the audit first.");
+  const csv = "Module,Client,Audited_Base,Rate_BPS,Net_Impact,Timestamp,SHA256_Seal\n" +
+    `"${"vc-leader"}","${lastReport.client}","${lastReport.base}",${lastReport.bps},"${lastReport.impact}","${lastReport.ts}","${lastReport.hash}"\n`;
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([csv], {type: "text/csv"}));
+  a.download = "apumia_audit_workpaper.csv";
+  a.click();
+}
+</script>
+</body>
+</html>

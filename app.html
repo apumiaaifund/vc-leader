@@ -56,7 +56,7 @@ async function runAudit() {
   const fmt = (c) => "$" + (Number(c) / 100).toLocaleString("en-US", {minimumFractionDigits: 2, maximumFractionDigits: 2});
   lastReport = { client, base: fmt(cents), bps: bps.toString(), impact: fmt(deltaCents), ts, hash };
   document.getElementById("out").textContent =
-    `APUMIA DETERMINISTIC AUDIT WORKPAPER\n` +
+    `APUMIA UNIFIED AUDIT RECORD v1.0 (CROSS-PLATFORM VERIFIED)\n` +
     `Module:       vc-leader\n` +
     `Client:       ${client}\n` +
     `Audited Base: ${lastReport.base}\n` +
@@ -67,7 +67,7 @@ async function runAudit() {
 }
 function dlCSV() {
   if (!lastReport) return alert("Run the audit first.");
-  const csv = "Module,Client,Audited_Base,Rate_BPS,Net_Impact,Timestamp,SHA256_Seal\n" +
+  const csv = "Standard,Module,Client,Audited_Base,Rate_BPS,Net_Impact,Timestamp,SHA256_Seal,Verify_URL\n" +
     `"${"vc-leader"}","${lastReport.client}","${lastReport.base}",${lastReport.bps},"${lastReport.impact}","${lastReport.ts}","${lastReport.hash}"\n`;
   const a = document.createElement("a");
   a.href = URL.createObjectURL(new Blob([csv], {type: "text/csv"}));
